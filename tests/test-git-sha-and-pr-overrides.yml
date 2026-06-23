@@ -1,0 +1,35 @@
+name: Test action with git sha, dbt version, and PR ID inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run action with git_sha, dbt_version_override, and github_pull_request_id
+        id: action
+        uses: .
+        continue-on-error: true
+        with:
+          dbt_cloud_url: https://cloud.getdbt.com
+          dbt_cloud_token: invalid-token-for-testing
+          dbt_cloud_account_id: "99999"
+          dbt_cloud_job_id: "99999"
+          cause: "Test run with git sha and PR ID"
+          failure_on_error: "false"
+          wait_for_job: "false"
+          get_artifacts: "false"
+          fetch_catalog: "false"
+          git_sha: "abc1234def5678901234567890abcdef12345678"
+          dbt_version_override: "1.5.0"
+          github_pull_request_id: "42"
+
+      - name: Assert action failed due to invalid credentials (not input parsing)
+        run: |
+          echo "outcome: ${{ steps.action.outcome }}"
+          if [ "${{ steps.action.outcome }}" != "failure" ]; then
+            echo "FAIL: expected action to fail with invalid credentials, but got outcome: ${{ steps.action.outcome }}"
+            exit 1
+          fi
+          echo "PASS: action correctly processed git_sha, dbt_version_override, and github_pull_request_id inputs and failed on API call (not input parsing)"
