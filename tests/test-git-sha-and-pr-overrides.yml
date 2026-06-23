@@ -1,0 +1,33 @@
+name: Test action with git_sha, dbt_version_override, and github_pull_request_id inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          dbt_cloud_url: https://cloud.getdbt.com
+          dbt_cloud_token: invalid-token
+          dbt_cloud_account_id: "12345"
+          dbt_cloud_job_id: "67890"
+          cause: "Test with git_sha, dbt_version_override, and github_pull_request_id"
+          failure_on_error: "true"
+          get_artifacts: "false"
+          wait_for_job: "false"
+          git_sha: "abc1234def5678901234567890abcdef12345678"
+          dbt_version_override: "1.5.0"
+          github_pull_request_id: "42"
+      - name: Assert action ran (not skipped)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action was skipped unexpectedly"
+            exit 1
+          fi
+          echo "PASS: action ran with git_sha, dbt_version_override, and github_pull_request_id inputs, outcome=$OUTCOME"

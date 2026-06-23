@@ -1,0 +1,30 @@
+name: Test failure_on_error false does not block workflow
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          dbt_cloud_url: https://cloud.getdbt.com
+          dbt_cloud_token: invalid-token
+          dbt_cloud_account_id: "99999"
+          dbt_cloud_job_id: "11111"
+          cause: "Test failure_on_error=false"
+          failure_on_error: "false"
+          get_artifacts: "false"
+          wait_for_job: "false"
+      - name: Assert action ran (outcome is not skipped)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action was skipped, expected it to run"
+            exit 1
+          fi
+          echo "PASS: action ran with outcome=$OUTCOME"
