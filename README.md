@@ -8,6 +8,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
+| v5.1.0 | [`v5.1.0`](https://github.com/chainguard-actions/dbt-labs-dbt-cloud-job-action/tree/v5.1.0) | [`5f7648b`](https://github.com/dbt-labs/dbt-cloud-job-action/commit/5f7648be41e35535f83118d7f935055e62bb6336) |
 | v8.0.0 | [`v8.0.0`](https://github.com/chainguard-actions/dbt-labs-dbt-cloud-job-action/tree/v8.0.0) | [`1a63a02`](https://github.com/dbt-labs/dbt-cloud-job-action/commit/1a63a02cd47d3931cf1901dbe015159caba0e57e) |
 
 ## Privacy
