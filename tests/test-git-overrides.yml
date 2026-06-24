@@ -1,0 +1,34 @@
+name: Test dbt Cloud Job action with git and schema overrides
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          dbt_cloud_url: https://cloud.getdbt.com
+          dbt_cloud_token: invalid-token
+          dbt_cloud_account_id: "99999"
+          dbt_cloud_job_id: "99999"
+          cause: "Test run from GitHub Actions - git overrides"
+          failure_on_error: "true"
+          get_artifacts: "false"
+          fetch_catalog: "false"
+          wait_for_job: "false"
+          git_sha: "abc1234def5678901234567890abcdef12345678"
+          git_branch: "feature/test-branch"
+          github_pull_request_id: "42"
+          schema_override: "test_schema"
+          target_name_override: "test_target"
+      - name: Assert action failed due to invalid credentials (git overrides path)
+        run: |
+          echo "outcome: ${{ steps.action.outcome }}"
+          if [ "${{ steps.action.outcome }}" != "failure" ]; then
+            echo "FAIL: expected action to fail with invalid credentials, got: ${{ steps.action.outcome }}"
+            exit 1
+          fi
+          echo "PASS: action correctly failed with invalid credentials when git/schema overrides are set"

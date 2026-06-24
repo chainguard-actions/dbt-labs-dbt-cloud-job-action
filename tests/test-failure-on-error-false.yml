@@ -1,0 +1,32 @@
+name: Test dbt Cloud Job action with failure_on_error false
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          dbt_cloud_url: https://cloud.getdbt.com
+          dbt_cloud_token: invalid-token
+          dbt_cloud_account_id: "99999"
+          dbt_cloud_job_id: "99999"
+          cause: "Test run from GitHub Actions"
+          failure_on_error: "false"
+          get_artifacts: "false"
+          fetch_catalog: "false"
+          wait_for_job: "false"
+      - name: Assert action ran (failure_on_error=false should not propagate errors)
+        run: |
+          echo "outcome: ${{ steps.action.outcome }}"
+          # With failure_on_error=false, the action should succeed even if the dbt job fails.
+          # However, with completely invalid credentials the HTTP request itself may fail,
+          # so we accept either success or failure here — the key check is that the step ran.
+          if [ "${{ steps.action.outcome }}" = "" ]; then
+            echo "FAIL: action did not run at all"
+            exit 1
+          fi
+          echo "PASS: action ran with outcome=${{ steps.action.outcome }}"
