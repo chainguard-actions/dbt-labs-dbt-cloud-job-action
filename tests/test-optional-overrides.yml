@@ -1,4 +1,4 @@
-name: Test failure_on_error false
+name: Test optional override inputs
 on:
   workflow_dispatch:
 jobs:
@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Run action with failure_on_error false (expect failure at API level)
+      - name: Run action with optional overrides (expect failure at API level)
         id: action
         uses: .
         continue-on-error: true
@@ -15,17 +15,22 @@ jobs:
           dbt_cloud_token: "invalid-token-for-testing"
           dbt_cloud_account_id: "99999999"
           dbt_cloud_job_id: "99999999"
-          failure_on_error: "false"
-          cause: "Test run from GitHub Actions"
+          failure_on_error: "true"
+          cause: "Test run with overrides"
           wait_for_job: "false"
           get_artifacts: "false"
           fetch_catalog: "false"
+          schema_override: "test_schema"
+          target_name_override: "test_target"
+          threads_override: "4"
+          timeout_seconds_override: "3600"
+          generate_docs_override: "false"
 
-      - name: Assert action ran (outcome is either success or failure, not skipped)
+      - name: Assert action ran (not skipped)
         run: |
           echo "outcome: ${{ steps.action.outcome }}"
           if [ "${{ steps.action.outcome }}" = "skipped" ]; then
             echo "FAIL: action was skipped, expected it to run"
             exit 1
           fi
-          echo "PASS: action ran (outcome=${{ steps.action.outcome }})"
+          echo "PASS: action ran with optional overrides (outcome=${{ steps.action.outcome }})"
