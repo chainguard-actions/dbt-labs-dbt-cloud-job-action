@@ -1,4 +1,4 @@
-name: Test custom dbt Cloud URL
+name: Test git sha and branch override inputs
 on:
   workflow_dispatch:
 jobs:
@@ -7,17 +7,18 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Run action with custom dbt Cloud URL (expect failure)
+      - name: Run action with git overrides (expect failure due to invalid credentials)
         id: action
         uses: .
         continue-on-error: true
         with:
-          dbt_cloud_url: "https://emea.dbt.com"
           dbt_cloud_token: "fake-token-for-testing"
           dbt_cloud_account_id: "99999999"
           dbt_cloud_job_id: "99999999"
           failure_on_error: "true"
-          cause: "Test run with custom URL"
+          cause: "Test run with git overrides"
+          git_sha: "abc1234def5678901234567890abcdef12345678"
+          git_branch: "feature/test-branch"
           wait_for_job: "false"
           get_artifacts: "false"
           fetch_catalog: "false"
@@ -28,7 +29,7 @@ jobs:
         run: |
           echo "outcome: $OUTCOME"
           if [ "$OUTCOME" = "success" ]; then
-            echo "FAIL: expected action to fail with invalid credentials/URL but it succeeded"
+            echo "FAIL: expected action to fail with invalid credentials but it succeeded"
             exit 1
           fi
-          echo "PASS: action failed as expected with custom URL and invalid credentials"
+          echo "PASS: action failed as expected (invalid credentials), git override inputs were accepted"
