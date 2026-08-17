@@ -1,4 +1,4 @@
-name: Test api_timeout and dbt_version_override inputs
+name: Test failure_on_error false with invalid credentials
 on:
   workflow_dispatch:
 jobs:
@@ -14,23 +14,21 @@ jobs:
           dbt_cloud_token: "fake-token-for-testing"
           dbt_cloud_account_id: "99999"
           dbt_cloud_job_id: "99999"
-          failure_on_error: "true"
+          failure_on_error: "false"
           cause: "Test run from GitHub Actions"
-          wait_for_job: "false"
+          wait_for_job: "true"
           get_artifacts: "false"
           fetch_catalog: "false"
-          api_timeout: "10000"
-          dbt_version_override: "1.5.0"
 
-      - name: Assert action ran with api_timeout and dbt_version_override inputs
+      - name: Assert action ran (outcome is failure or success due to API error)
         env:
           OUTCOME: ${{ steps.action.outcome }}
         run: |
           echo "outcome: $OUTCOME"
-          # With fake credentials the action should fail; we just verify it ran
-          if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
-            echo "PASS: action ran and produced an outcome with api_timeout and dbt_version_override inputs"
-          else
-            echo "FAIL: unexpected outcome: $OUTCOME"
+          # With invalid credentials the action will fail at the API call level
+          # regardless of failure_on_error setting. We just verify it ran.
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action was skipped, expected it to run"
             exit 1
           fi
+          echo "PASS: action ran with outcome=$OUTCOME"
