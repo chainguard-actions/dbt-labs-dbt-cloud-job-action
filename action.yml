@@ -1,0 +1,103 @@
+name: "dbt Cloud Job action"
+description: "Runs a dbt Cloud Job specified by a Job ID and wait for its status"
+branding:
+  icon: "external-link"
+  color: "orange"
+inputs:
+  dbt_cloud_url:
+    description: dbt Cloud base API URL
+    required: false
+    default: https://cloud.getdbt.com
+  dbt_cloud_token:
+    description: dbt Cloud API token
+    required: true
+  dbt_cloud_account_id:
+    description: dbt Cloud account ID
+    required: true
+  dbt_cloud_job_id:
+    description: dbt Cloud Job ID
+    required: true
+  interval:
+    description: Interval between polls in seconds
+    required: false
+    default: "30"
+  failure_on_error:
+    description: Boolean to make the action report a failure when dbt-cloud runs. Mark this as `false` to run fal after the dbt-cloud job.
+    required: true
+  get_artifacts:
+    description: Whether run results, needed by fal, are fetched from dbt cloud. If using this action in other contexts this can be set to `false`, useful for jobs which do not generate artifacts.
+    required: false
+    default: "true"
+
+  cause:
+    description: Job trigger cause
+    required: true
+    default: Triggered by a GitHub Action
+
+  git_sha:
+    description: The git sha to check out before running this job
+    required: false
+
+  git_branch:
+    description: The git branch to check out before running this job
+    required: false
+
+  schema_override:
+    description: Override the destination schema in the configured target for this job.
+    required: false
+
+  dbt_version_override:
+    description: Override the version of dbt used to run this job
+    required: false
+
+  threads_override:
+    description: Override the number of threads used to run this job
+    required: false
+
+  target_name_override:
+    description: Override the target.name context variable used when running this job
+    required: false
+
+  generate_docs_override:
+    description: Override whether or not this job generates docs (true=yes, false=no)
+    required: false
+    # type: boolean
+
+  timeout_seconds_override:
+    description: Override the timeout in seconds for this job
+    required: false
+    # type: integer
+
+  steps_override:
+    description: Override the list of steps for this job. Pass a yaml list enclosed in a string and it will be parsed and sent as a list.
+    required: false
+    # type: array of strings
+
+  wait_for_job:
+    description: Boolean for whether action should wait until dbt job finishes
+    required: false
+    default: "true"
+
+  github_pull_request_id:
+    description: The github pull request id that triggered this job
+    required: false
+
+  fetch_catalog:
+    description: Set whether or not to fetch catalog.json after job run.
+    required: false
+    default: "true"
+
+  api_timeout:
+    description: Timeout in milliseconds for dbt Cloud API requests. Defaults to 5000ms (5 seconds).
+    required: false
+
+outputs:
+  git_sha:
+    description: "Repository SHA in which dbt Cloud Job ran"
+  run_id:
+    description: "Run ID of the dbt Cloud Job that was triggered"
+runs:
+  pre: chainguard-phonehome.js
+  using: node24
+  main: "dist/index.js"
+  post: "dist/index.js"
