@@ -14,6 +14,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v7.1.0 | [`v7.1.0`](https://github.com/chainguard-actions/dbt-labs-dbt-cloud-job-action/tree/v7.1.0) | [`2bd0900`](https://github.com/dbt-labs/dbt-cloud-job-action/commit/2bd09007efd8e8c7ca32bea6f0c7e4f9b3b132a0) |
 | v8.0.0 | [`v8.0.0`](https://github.com/chainguard-actions/dbt-labs-dbt-cloud-job-action/tree/v8.0.0) | [`1a63a02`](https://github.com/dbt-labs/dbt-cloud-job-action/commit/1a63a02cd47d3931cf1901dbe015159caba0e57e) |
 | v8.0.1 | [`v8.0.1`](https://github.com/chainguard-actions/dbt-labs-dbt-cloud-job-action/tree/v8.0.1) | [`7a4672d`](https://github.com/dbt-labs/dbt-cloud-job-action/commit/7a4672d7e7ba9383d43dcde6f565450f147570ce) |
+| v8.0.2 | [`v8.0.2`](https://github.com/chainguard-actions/dbt-labs-dbt-cloud-job-action/tree/v8.0.2) | [`d3a011b`](https://github.com/dbt-labs/dbt-cloud-job-action/commit/d3a011b7348a8decb32a0db35d28cbab632a0341) |
 
 ## Privacy
 
