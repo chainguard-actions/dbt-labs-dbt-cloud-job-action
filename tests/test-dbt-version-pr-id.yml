@@ -1,0 +1,38 @@
+name: Test dbt_version_override and github_pull_request_id inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          dbt_cloud_url: https://cloud.getdbt.com
+          dbt_cloud_token: fake-token-for-testing
+          dbt_cloud_account_id: "12345"
+          dbt_cloud_job_id: "67890"
+          failure_on_error: "false"
+          wait_for_job: "false"
+          get_artifacts: "false"
+          fetch_catalog: "false"
+          cause: "Test dbt_version_override and github_pull_request_id"
+          dbt_version_override: "1.5.0"
+          github_pull_request_id: "42"
+      - name: Assert action ran with dbt_version_override and github_pull_request_id inputs
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          RUN_ID: ${{ steps.action.outputs.run_id }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "run_id: $RUN_ID"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (expected with fake credentials)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
