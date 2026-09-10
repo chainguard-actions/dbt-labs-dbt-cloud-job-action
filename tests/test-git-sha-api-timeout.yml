@@ -21,17 +21,15 @@ jobs:
           cause: "Test git_sha and api_timeout"
           git_sha: "abc1234def5678901234567890abcdef12345678"
           api_timeout: "3000"
-      - name: Assert action ran with git_sha and api_timeout inputs
+      - name: Assert action ran (failed gracefully with fake credentials)
         env:
           OUTCOME: ${{ steps.action.outcome }}
-          RUN_ID: ${{ steps.action.outputs.run_id }}
         run: |
           echo "outcome: $OUTCOME"
-          echo "run_id: $RUN_ID"
           if [ "$OUTCOME" = "success" ]; then
             echo "PASS: action succeeded"
           elif [ "$OUTCOME" = "failure" ]; then
-            echo "PASS: action failed gracefully (expected with fake credentials)"
+            echo "PASS: action failed gracefully (expected with fake dbt Cloud credentials)"
           else
             echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1

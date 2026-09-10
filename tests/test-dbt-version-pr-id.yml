@@ -21,17 +21,15 @@ jobs:
           cause: "Test dbt_version_override and github_pull_request_id"
           dbt_version_override: "1.5.0"
           github_pull_request_id: "42"
-      - name: Assert action ran with dbt_version_override and github_pull_request_id inputs
+      - name: Assert action ran (failed gracefully with fake credentials)
         env:
           OUTCOME: ${{ steps.action.outcome }}
-          RUN_ID: ${{ steps.action.outputs.run_id }}
         run: |
           echo "outcome: $OUTCOME"
-          echo "run_id: $RUN_ID"
           if [ "$OUTCOME" = "success" ]; then
             echo "PASS: action succeeded"
           elif [ "$OUTCOME" = "failure" ]; then
-            echo "PASS: action failed gracefully (expected with fake credentials)"
+            echo "PASS: action failed gracefully (expected with fake dbt Cloud credentials)"
           else
             echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1
