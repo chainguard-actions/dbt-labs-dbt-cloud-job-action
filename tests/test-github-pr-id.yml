@@ -1,4 +1,4 @@
-name: Test git_sha input
+name: Test github_pull_request_id input
 on:
   workflow_dispatch:
 jobs:
@@ -18,8 +18,8 @@ jobs:
           wait_for_job: "false"
           get_artifacts: "false"
           fetch_catalog: "false"
-          cause: "Test git_sha input"
-          git_sha: "abc1234def5678901234567890abcdef12345678"
+          cause: "Test github_pull_request_id input"
+          github_pull_request_id: "42"
       - name: Assert action ran or failed gracefully
         env:
           OUTCOME: ${{ steps.action.outcome }}
