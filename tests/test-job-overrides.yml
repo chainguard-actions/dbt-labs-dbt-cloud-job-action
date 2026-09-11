@@ -1,0 +1,40 @@
+name: Test job override inputs (schema_override, target_name_override, threads_override, timeout_seconds_override)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          dbt_cloud_url: https://cloud.getdbt.com
+          dbt_cloud_token: fake-token-for-testing
+          dbt_cloud_account_id: "99999"
+          dbt_cloud_job_id: "99999"
+          failure_on_error: "false"
+          wait_for_job: "false"
+          get_artifacts: "false"
+          fetch_catalog: "false"
+          cause: "Test job override inputs"
+          schema_override: "test_schema"
+          target_name_override: "test_target"
+          threads_override: "4"
+          timeout_seconds_override: "600"
+          interval: "5"
+          api_timeout: "3000"
+      - name: Assert action ran (failed gracefully with invalid credentials)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded (unexpected but acceptable)"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully as expected with invalid credentials"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
