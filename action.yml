@@ -97,7 +97,6 @@ outputs:
   run_id:
     description: "Run ID of the dbt Cloud Job that was triggered"
 runs:
-  pre: chainguard-phonehome.js
   using: node20
   main: "dist/index.js"
   post: "dist/index.js"

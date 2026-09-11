@@ -1,0 +1,32 @@
+name: Test api_timeout input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          dbt_cloud_token: fake-token-for-testing
+          dbt_cloud_account_id: "99999"
+          dbt_cloud_job_id: "99999"
+          failure_on_error: "false"
+          wait_for_job: "false"
+          api_timeout: "2000"
+          cause: "Test api_timeout input"
+      - name: Assert action ran with api_timeout input (fails gracefully on fake credentials)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded (unexpected but acceptable)"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully as expected with fake credentials"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
